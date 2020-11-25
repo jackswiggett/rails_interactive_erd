@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= RailsInteractiveErd.title %></title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <%# Library required for visualization with d3-graphviz %>
+  <%= javascript_include_tag "https://unpkg.com/@hpcc-js/wasm/dist/index.min.js" %>
+  <%= javascript_include_tag "rails_interactive_erd/application" %>
+</head>
+<body>
+
+<%= yield %>
+
+</body>
+</html>

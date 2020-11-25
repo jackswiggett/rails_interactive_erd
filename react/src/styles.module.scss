@@ -1,0 +1,180 @@
+$button-color: #2260FF;
+
+@mixin button {
+  cursor: pointer;
+  color: $button-color;
+  border: none;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  font: inherit;
+
+  &:hover, &:active {
+    color: darken($button-color, 20%);
+  }
+}
+
+.root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  :global(.node) {
+    text {
+      &:hover {
+        fill: $button-color;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid black;
+  font-size: 1.5rem;
+  padding: 0.7rem 1rem;
+}
+
+.entitySelect {
+  width: 25rem;
+}
+
+.content {
+  flex: auto;
+  display: flex;
+}
+
+.leftPanel, .rightPanel {
+  flex: 1 1 50%;
+}
+
+.leftPanel {
+  position: relative;
+
+  .loadingIndicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.rightPanel {
+  border-left: 1px solid black;
+  position: relative;
+  background: white;
+}
+
+.diagram, .entityDetails {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.entityDetails {
+  overflow: scroll;
+  padding: 1rem;
+
+  table {
+    font-size: 0.9rem;
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  table, th, td {
+    border: 1px solid #bbb;
+  }
+
+  th {
+    background: #cce3ff;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.4rem;
+  }
+
+  h2 {
+    margin-top: 0;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: inherit;
+  }
+}
+
+.nameCell {
+  font-weight: 500;
+}
+
+.typeCell {
+  display: flex;
+}
+
+.modalContainer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.button {
+  @include button;
+}
+
+.modal {
+  font-size: 1rem;
+  font-weight: normal;
+  border: 1px solid black;
+  border-radius: 0.3rem;
+  padding: 2rem;
+  position: relative;
+  background: white;
+
+  .closeButton {
+    @include button;
+    position: absolute;
+    top: 0.2rem;
+    right: 0.1rem;
+    font-size: 1.5rem;
+  }
+
+  p {
+    margin: 0 0 1rem;
+  }
+
+  ul {
+    margin: 0
+  }
+
+  li {
+    margin-top: 0.3rem;
+  }
+}
+
+.infoButton {
+  @include button;
+  transform: scale(1.3) translate(0.3rem, 0.1rem);
+}
