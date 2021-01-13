@@ -2,6 +2,18 @@ require "rails_interactive_erd/engine"
 
 # Allow host application to set configuration options for rails_interactive_erd
 module RailsInteractiveErd
+  # Title of the diagram
+  mattr_accessor :title
+  self.title = 'Interactive ERD'
+
+  # Exclude specific models from the diagram
+  mattr_accessor :excluded_model_names
+  self.excluded_model_names = []
+
+  # Provide a Proc to modify the column configuration on a case-by-case basis
+  mattr_accessor :configure_column
+  self.configure_column = proc { |column_config| column_config }
+
   # Stores configuration for a column of an entity
   class ColumnConfiguration
     ATTRIBUTES = %i[name type comment associations enum_values hide_edge].freeze
@@ -25,18 +37,6 @@ module RailsInteractiveErd
   end
 
   class << self
-    # Title of the diagram
-    mattr_accessor :title
-    self.title = 'Interactive ERD'
-
-    # Exclude specific models from the diagram
-    mattr_accessor :excluded_model_names
-    self.excluded_model_names = []
-
-    # Provide a Proc to modify the column configuration on a case-by-case basis
-    mattr_accessor :configure_column
-    self.configure_column = proc { |column_config| column_config }
-
     def setup
       yield self
     end
