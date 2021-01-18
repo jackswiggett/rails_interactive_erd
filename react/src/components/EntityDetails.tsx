@@ -46,7 +46,8 @@ const EntityDetails: React.FC<Props> = ({ entity, setEntityName }) => {
 
   return (
     <div className={styles.entityDetails}>
-      <h2>{entity.comment || '(table has no description)'}</h2>
+      <h2>{entity.friendlyName}</h2>
+      {entity.comment ? <p>{entity.comment}</p> : null}
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (

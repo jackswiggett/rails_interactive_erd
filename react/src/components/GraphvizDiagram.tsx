@@ -1,11 +1,6 @@
-import { graphviz } from 'd3-graphviz';
-import { transition } from 'd3-transition';
 import keyBy from 'lodash/keyBy';
-import React, {
-  useEffect, useMemo, useRef, useState,
-} from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import useResizeAware from 'react-resize-aware';
-import { RingLoader } from 'react-spinners';
 import { digraph, toDot } from 'ts-graphviz';
 import styles from '../styles.module.scss';
 import { Schema } from '../types';
@@ -28,24 +23,24 @@ const GraphvizDiagram: React.FC<Props> = ({ schema: { entities }, entityName, se
   const entitiesByName = useMemo(() => keyBy(entities, 'name'), [entities]);
 
   const edges = useMemo(() => {
-    const _edges: Array<[string, string]> = [];
+    const result: Array<[string, string]> = [];
 
     entities.forEach((entity) => {
       entity.columns.forEach((column) => {
         if (column.hideEdge) return;
 
         column.associations.forEach((association) => {
-          _edges.push([association, entity.name]);
+          result.push([association, entity.name]);
         });
       });
     });
 
-    return _edges;
+    return result;
   }, [entities]);
 
   const getDotNotation = () => {
     // Config values are copied from rails-erd dot file output
-    const graph = digraph('G', {
+    const graph = digraph(undefined, {
       rankdir: 'LR',
       ranksep: '0.5',
       nodesep: '0.4',
@@ -107,57 +102,60 @@ const GraphvizDiagram: React.FC<Props> = ({ schema: { entities }, entityName, se
     return () => window.removeEventListener('click', onClick);
   });
 
+  const transitionEnabled = useRef(false);
+
   const renderGraph = () => {
     const { width, height } = sizes;
 
-    if (!containerRef.current || !width || !height) return null;
+    if (!containerRef.current || !width || !height) return;
 
-    return graphviz(containerRef.current)
+    const graph = d3.select(containerRef.current).graphviz()
       .engine('dot')
       .renderDot(getDotNotation())
       .width(width)
       .height(height)
       .fit(true)
       .zoomScaleExtent([0.5, 5]);
+
+    if (graph.zoomSelection()) {
+      graph.resetZoom(d3.transition('resetzoom').duration(750) as any);
+    }
+
+    if (transitionEnabled.current) graph.transition(d3.transition('main').duration(750) as any);
+
+    // Only enable transitions after the first render
+    transitionEnabled.current = true;
   };
 
   const previousEntityName = usePrevious(entityName);
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Re-render graph and reset zoom when entity changes
+  // Render the graph on initial load, and when the size changes (either resizing the browser
+  // window, or switching between top-level view and entity-level view)
   useEffect(() => {
-    const graph = renderGraph();
-    if (!graph) return;
-
-    if (graph.zoomSelection()) graph.resetZoom();
-
-    // skip the transition if we're switching between the single entity and entire database view,
-    // since we also change the size of the graph and a transition looks janky
-    const showTransition = entityName && previousEntityName;
-
-    graph.transition(() => transition('main').duration(showTransition ? 1000 : 0) as any);
-
-    // if we are not animating the transition, show a loading indicator
-    setIsLoading(!showTransition);
-    graph.on('end', () => setIsLoading(false));
-  }, [containerRef.current, entityName]);
-
-  // Re-render graph when window size changes
-  useEffect(() => {
-    if (previousEntityName !== entityName) return;
-
     renderGraph();
   }, [containerRef.current, sizes.width, sizes.height]);
+
+  // Re-render the graph when switching from one entity to another
+  useEffect(() => {
+    if (previousEntityName && entityName) {
+      renderGraph();
+    }
+  }, [entityName]);
 
   return (
     <div className={styles.leftPanel}>
       {resizeListener}
       <div className={styles.diagram} ref={containerRef} />
-      {isLoading && (
-        <div className={styles.loadingIndicator}>
-          {!entityName && <RingLoader />}
+      {entityName ? (
+        <div
+          className={styles.viewAllButton}
+          onClick={() => setEntityName(undefined)}
+          role="button"
+          tabIndex={0}
+        >
+          View All Tables
         </div>
-      )}
+      ) : null}
     </div>
   );
 };
