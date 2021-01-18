@@ -7,12 +7,14 @@ module RailsInteractiveErd
       Rails.application.eager_load! unless Rails.application.config.eager_load
 
       schema = {
-        title: RailsInteractiveErd.title,
-        entities: entities
+        entities: entities,
+        logoImagePath: RailsInteractiveErd.logo_image_path
       }
 
       render :main, locals: { schema: schema.to_json }
     end
+
+    private
 
     # Get information about all database entities (models)
     def entities

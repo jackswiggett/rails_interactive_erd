@@ -4,9 +4,17 @@
   <title><%= RailsInteractiveErd.title %></title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
+  <% if RailsInteractiveErd.favicon_path %>
+    <%= favicon_link_tag RailsInteractiveErd.favicon_path %>
+  <% end %>
 
-  <%# Library required for visualization with d3-graphviz %>
-  <%= javascript_include_tag "https://unpkg.com/@hpcc-js/wasm/dist/index.min.js" %>
+  <%# Load dependencies required for visualization with d3-graphviz. Loading via webpack is possible but led to a host
+      of issues with loading the WASM library and operating inside a web worker, and loading via CDN "just works". %>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://unpkg.com/@hpcc-js/wasm@0.3.13/dist/index.min.js" type="javascript/worker"></script>
+  <script src="https://unpkg.com/d3-graphviz@3.1.0/build/d3-graphviz.js"></script>
+
+  <%# Load React app %>
   <%= javascript_include_tag "rails_interactive_erd/application" %>
 </head>
 <body>

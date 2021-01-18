@@ -14,6 +14,14 @@ module RailsInteractiveErd
   mattr_accessor :configure_column
   self.configure_column = proc { |column_config| column_config }
 
+  # Custom logo image displayed in place of the search icon
+  mattr_accessor :logo_image_path
+  self.logo_image_path = nil
+
+  # Custom favicon
+  mattr_accessor :favicon_path
+  self.favicon_path = nil
+
   # Stores configuration for a column of an entity
   class ColumnConfiguration
     ATTRIBUTES = %i[name type comment associations enum_values hide_edge].freeze

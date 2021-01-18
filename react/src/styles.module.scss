@@ -1,3 +1,4 @@
+$secondary-text-color: #797979;
 $button-color: #2260FF;
 
 @mixin button {
@@ -35,17 +36,72 @@ $button-color: #2260FF;
   }
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid black;
-  font-size: 1.5rem;
-  padding: 0.7rem 1rem;
-}
+.searchBar {
+  $height: 4.5rem;
 
-.entitySelect {
-  width: 25rem;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid black;
+  padding: 0 18px;
+  height: $height;
+
+  input[type=text] {
+    flex: auto;
+    border: none;
+    outline: none;
+    font-size: 1.5rem;
+    margin-left: 15px;
+  }
+
+  .searchIcon {
+    color: $secondary-text-color;
+  }
+
+  .logoImage {
+    max-width: 45px;
+    max-height: 45px;
+  }
+
+  .clearIcon {
+    color: $secondary-text-color;
+
+    &:hover {
+      cursor: pointer;
+      color: darken($secondary-text-color, 10%);
+    }
+  }
+
+  .results {
+    position: fixed;
+    top: calc(#{$height} + 2px); // leave room for border-bottom of search bar
+    left: 0;
+    right: 0;
+    max-height: calc(100vh - #{$height} - 100px);
+    overflow: scroll;
+    border-bottom: 0.5px solid black;
+    z-index: 2;
+    background: white;
+
+    .searchResult {
+      height: 3rem;
+      font-size: 1.125rem;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      border-bottom: 0.5px solid black;
+
+      > div {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      &:hover {
+        cursor: pointer;
+        background: #eeeeee;
+      }
+    }
+  }
 }
 
 .content {
@@ -53,42 +109,43 @@ $button-color: #2260FF;
   display: flex;
 }
 
-.leftPanel, .rightPanel {
-  flex: 1 1 50%;
+.viewAllButton {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  color: $secondary-text-color;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+
+  &:hover {
+    cursor: pointer;
+    color: darken($secondary-text-color, 10%);
+  }
 }
 
-.leftPanel {
+.leftPanel, .rightPanel {
+  flex: 1 1 50%;
   position: relative;
-
-  .loadingIndicator {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-    background: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
 }
 
 .rightPanel {
   border-left: 1px solid black;
-  position: relative;
   background: white;
 }
 
-.diagram, .entityDetails {
+.diagram {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.entityDetails {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-}
-
-.entityDetails {
   overflow: scroll;
   padding: 1rem;
 
@@ -96,6 +153,7 @@ $button-color: #2260FF;
     font-size: 0.9rem;
     border-collapse: collapse;
     width: 100%;
+    margin-top: 1rem;
   }
 
   table, th, td {
@@ -112,10 +170,14 @@ $button-color: #2260FF;
   }
 
   h2 {
-    margin-top: 0;
+    margin: 0 0 0.5rem;
     font-size: 1.2rem;
-    font-weight: 400;
+    font-weight: 600;
     color: inherit;
+  }
+
+  p {
+    margin: 0.5rem 0;
   }
 }
 
