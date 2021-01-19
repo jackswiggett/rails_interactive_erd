@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import queryString from 'query-string';
+import React from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import styles from '../styles.module.scss';
 import { Schema } from '../types';
 import EntityDetails from './EntityDetails';
@@ -12,7 +14,14 @@ interface Props {
 
 /** Interactive entity relationship diagram to visualize and explore the database schema */
 const ERD: React.FC<Props> = ({ schema }) => {
-  const [entityName, setEntityName] = useState<string>();
+  const history = useHistory();
+  const location = useLocation();
+
+  const entityName = queryString.parse(location.search).entity?.toString();
+
+  const setEntityName = (value?: string) => {
+    history.push({ search: queryString.stringify({ entity: value }) });
+  };
 
   const entity = schema.entities.find(({ name }) => name === entityName);
 

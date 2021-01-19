@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import ERD from './components/ERD';
 
 /* eslint-disable import/prefer-default-export */
@@ -9,5 +10,10 @@ import ERD from './components/ERD';
  * and renders an ERD in the provided DOM element
  */
 export const mountERD = (schema: any, element: Element) => {
-  render(<ERD schema={schema} />, element);
+  render(
+    <Router>
+      <ERD schema={schema} />
+    </Router>,
+    element,
+  );
 };
