@@ -8,7 +8,9 @@ module RailsInteractiveErd
 
       schema = {
         entities: entities,
-        logoImagePath: RailsInteractiveErd.logo_image_path
+        logoImagePath: if RailsInteractiveErd.logo_image
+                         ActionController::Base.helpers.asset_path(RailsInteractiveErd.logo_image)
+                       end
       }
 
       render :main, locals: { schema: schema.to_json }

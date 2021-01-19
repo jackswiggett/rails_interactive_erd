@@ -15,12 +15,12 @@ module RailsInteractiveErd
   self.configure_column = proc { |column_config| column_config }
 
   # Custom logo image displayed in place of the search icon
-  mattr_accessor :logo_image_path
-  self.logo_image_path = nil
+  mattr_accessor :logo_image
+  self.logo_image = nil
 
-  # Custom favicon
-  mattr_accessor :favicon_path
-  self.favicon_path = nil
+  # Custom favicon image
+  mattr_accessor :favicon_image
+  self.favicon_image = nil
 
   # Stores configuration for a column of an entity
   class ColumnConfiguration
