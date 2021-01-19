@@ -12,11 +12,10 @@ interface Props {
 /** Search result with a link to the corresponding entity or column */
 const SearchResult: React.FC<Props> = ({ result: { entity, splitText }, setEntityName }) => {
   return (
-    <div
+    <button
+      type="button"
       className={styles.searchResult}
       onMouseDown={() => setEntityName(entity.name)}
-      role="button"
-      tabIndex={0}
     >
       <div>
         {splitText.map((text, index) => (
@@ -25,7 +24,7 @@ const SearchResult: React.FC<Props> = ({ result: { entity, splitText }, setEntit
             : <strong key={index.toString()}>{text}</strong>
         ))}
       </div>
-    </div>
+    </button>
   );
 };
 

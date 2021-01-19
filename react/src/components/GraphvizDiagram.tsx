@@ -147,14 +147,13 @@ const GraphvizDiagram: React.FC<Props> = ({ schema: { entities }, entityName, se
       {resizeListener}
       <div className={styles.diagram} ref={containerRef} />
       {entityName ? (
-        <div
+        <button
+          type="button"
           className={styles.viewAllButton}
           onClick={() => setEntityName(undefined)}
-          role="button"
-          tabIndex={0}
         >
           View All Tables
-        </div>
+        </button>
       ) : null}
     </div>
   );

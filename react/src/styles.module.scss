@@ -83,7 +83,11 @@ $button-color: #2260FF;
     background: white;
 
     .searchResult {
+      font: inherit;
+      border: none;
+      background: none;
       height: 3rem;
+      width: 100%;
       font-size: 1.125rem;
       display: flex;
       align-items: center;
@@ -110,6 +114,9 @@ $button-color: #2260FF;
 }
 
 .viewAllButton {
+  font: inherit;
+  background: none;
+  border: none;
   position: absolute;
   bottom: 20px;
   left: 50%;
