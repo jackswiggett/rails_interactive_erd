@@ -4,8 +4,8 @@
   <title><%= RailsInteractiveErd.title %></title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
-  <% if RailsInteractiveErd.favicon_path %>
-    <%= favicon_link_tag RailsInteractiveErd.favicon_path %>
+  <% if RailsInteractiveErd.favicon_image %>
+    <%= favicon_link_tag RailsInteractiveErd.favicon_image %>
   <% end %>
 
   <%# Load dependencies required for visualization with d3-graphviz. Loading via webpack is possible but led to a host
