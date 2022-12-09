@@ -1,7 +1,7 @@
 import keyBy from 'lodash/keyBy';
 import React, { useEffect, useMemo, useRef } from 'react';
 import useResizeAware from 'react-resize-aware';
-import { digraph, toDot } from 'ts-graphviz';
+import { attribute as _, Digraph, Edge, Node, toDot } from 'ts-graphviz';
 import styles from '../styles.module.scss';
 import { Schema } from '../types';
 import { usePrevious } from '../utils';
@@ -40,25 +40,37 @@ const GraphvizDiagram: React.FC<Props> = ({ schema: { entities }, entityName, se
 
   const getDotNotation = () => {
     // Config values are copied from rails-erd dot file output
-    const graph = digraph(undefined, {
-      rankdir: 'LR',
-      ranksep: '0.5',
-      nodesep: '0.4',
-      pad: '0.4,0.4',
-      margin: '0,0',
-      concentrate: true,
-      splines: 'spline',
-    });
+    const graph = new Digraph(undefined, {
+      [_.rankdir]: 'LR',
+      [_.ranksep]: 0.5,
+      [_.nodesep]: 0.4,
+      [_.pad]: 0.4,
+      [_.margin]: 0,
+      [_.concentrate]: true,
+      [_.splines]: 'spline',
+    })
 
     const addEntityToGraph = (name: string) => {
-      if (!graph.existNode(name)) {
-        graph.createNode(name, {
-          shape: 'Mrecord',
-          label: entitiesByName[name].friendlyName,
-          fontname: 'Arial',
-          margin: '0.1,0.12',
-        });
-      }
+      const existingNode = graph.getNode(name);
+      if (existingNode) return existingNode;
+
+      const newNode = new Node(name, {
+        [_.shape]: 'Mrecord',
+        [_.label]: entitiesByName[name].friendlyName,
+        [_.fontname]: 'Arial',
+        [_.margin]: '%0.1,%0.12',
+      })
+      graph.addNode(newNode);
+
+      return newNode;
+    };
+
+    const addEdgeToGraph = (names: [string, string]) => {
+      const fromNode = addEntityToGraph(names[0]);
+      const toNode = addEntityToGraph(names[1]);
+
+      const edge = new Edge([fromNode, toNode]);
+      graph.addEdge(edge);
     };
 
     if (entityName) {
@@ -69,14 +81,13 @@ const GraphvizDiagram: React.FC<Props> = ({ schema: { entities }, entityName, se
         const [fromName, toName] = edge;
 
         if (fromName === entityName || toName === entityName) {
-          edge.forEach(addEntityToGraph);
-          graph.createEdge(edge);
+          addEdgeToGraph(edge);
         }
       });
     } else {
       // Show all entities
       entities.map(({ name }) => name).forEach(addEntityToGraph);
-      edges.forEach((edge) => graph.createEdge(edge));
+      edges.forEach(addEdgeToGraph);
     }
 
     return toDot(graph);

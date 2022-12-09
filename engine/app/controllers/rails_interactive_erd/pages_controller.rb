@@ -20,18 +20,23 @@ module RailsInteractiveErd
 
     # Get information about all database entities (models)
     def entities
-      # @see https://stackoverflow.com/a/36277614
-      all_models = ApplicationRecord.descendants.sort_by(&:name)
-      excluded_models = RailsInteractiveErd.excluded_model_names.map(&:constantize)
-
-      (all_models - excluded_models).map do |model|
+      model_names.to_a.sort.map do |name|
         {
-          name: model.name,
-          friendlyName: model.name.titlecase,
-          comment: model_comment(model),
-          columns: model_columns(model)
+          name: name,
+          friendlyName: name.titlecase,
+          comment: model_comment(name.constantize),
+          columns: model_columns(name.constantize)
         }
       end
+    end
+
+    # Get a set containing the names of all models that should be shown in the ERD
+    def model_names
+      return @model_names if @model_names.present?
+
+      # @see https://stackoverflow.com/a/36277614
+      @model_names = ApplicationRecord.descendants.map(&:name).to_set
+      @model_names -= RailsInteractiveErd.excluded_model_names
     end
 
     # Query PostgreSQL comments on all tables
@@ -88,7 +93,7 @@ module RailsInteractiveErd
           # to the models that this polymorphic association can reference
           model.distinct.pluck(association.foreign_type).compact
         end
-        .select { |name| RailsInteractiveErd.excluded_model_names.exclude?(name) }
+        .select { |name| model_names.include?(name) }
         .uniq
     end
   end
